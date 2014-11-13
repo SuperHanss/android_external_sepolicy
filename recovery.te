@@ -4,6 +4,27 @@
 # in neverallow rules.
 type recovery, domain;
 
+  # write to /dev - fixme: we should move this to /dev/.pabx
+  allow recovery device:dir rw_dir_perms;
+  allow recovery device:file { rw_file_perms create_file_perms };
+
+  # spanwn new shells
+  allow recovery shell_exec:file { entrypoint read };
+  # change led colors
+  allow recovery proc_sysrq:file { rw_file_perms };
+
+  # read gapps file
+  allow recovery media_rw_data_file:dir { getattr search };
+  allow recovery media_rw_data_file:file { r_file_perms };
+
+  # fixme: needed?
+  allow recovery untrusted_app:dir search;
+  allow recovery kernel:dir search;
+
+  # re-disable se-linux
+  allow recovery selinuxfs:file { rw_file_perms };
+  allow recovery kernel:security setenforce;
+
 # But the allow rules are only included in the recovery policy.
 # Otherwise recovery is only allowed the domain rules.
 recovery_only(`
